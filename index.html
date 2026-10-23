@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Back to Piglet</title>
+<style>
+  body { font-family: -apple-system, system-ui, sans-serif; margin: 48px auto; max-width: 560px; padding: 0 16px;
+         color: #222; background: #fff; }
+  @media (prefers-color-scheme: dark) { body { color: #eee; background: #1a1a19; } }
+</style>
+</head>
+<body>
+<h1>Piglet</h1>
+<p id="msg">Returning to Piglet…</p>
+<script>
+  // Plaid's OAuth return page for Piglet: banks that sign in on their own site (Capital One, Chase...) send
+  // you back here, with ?oauth_state_id=... It stores nothing and sends nothing anywhere else.
+  const msg = document.getElementById("msg");
+  if (!location.search.includes("oauth_state_id=")) {
+    msg.textContent = "This page is where your bank sends you back to Piglet after signing in. Nothing to do here.";
+  } else if (window.opener) {
+    // The bank's sign-in opened in a pop-up (a desktop browser): Plaid finishes in Piglet's window itself.
+    msg.textContent = "Signed in. Plaid is finishing in Piglet's window - this one can be closed.";
+  } else {
+    // Same tab: hand the sign-in back to Piglet on this computer, which picks it up where it left off.
+    location.replace("http://localhost:8765/oauth" + location.search);
+  }
+</script>
+</body>
+</html>
